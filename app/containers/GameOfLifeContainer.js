@@ -12,6 +12,12 @@ class GameOfLifeContainer extends React.Component {
   static board;
   static temp_board;
 
+  // Population color
+  static colorBabyUnit;
+  static colorAlphaUnit;
+  static colorBetaUnit;
+  static colorEmptySpace;
+
   constructor(props){
     super(props);
 
@@ -24,7 +30,13 @@ class GameOfLifeContainer extends React.Component {
     this.fps = 100;
     this.width = 50;
     this.height = 50;
-    this.radius = 4;
+    this.radius = 1;
+
+    // Population color
+    this.colorBabyUnit = 'green';
+    this.colorAlphaUnit = 'black';
+    this.colorBetaUnit = 'white';
+    this.colorEmptySpace = 'white';
   };
 
 
@@ -42,11 +54,10 @@ class GameOfLifeContainer extends React.Component {
   drawBoard(){
     for(let x = 0; x < this.board.length; x++)
       for(let y = 0; y < this.board[x].length; y++)
-        // console.log(this.board[x][y]);
         if(this.board[x][y] == true)
-          this.drawSubject(x, y, this.radius, '#000');
+          this.drawSubject(x, y, this.radius, this.colorAlphaUnit);
         else
-          this.drawSubject(x, y, this.radius, '#FFF');
+          this.drawSubject(x, y, this.radius, this.colorBetaUnit);
 
   }
 
@@ -66,7 +77,6 @@ class GameOfLifeContainer extends React.Component {
   startEngine(){
     setInterval(function(){
       this.playGod();
-      // this.drawBoard();
     }.bind(this), this.fps);
   };
 
@@ -77,12 +87,11 @@ class GameOfLifeContainer extends React.Component {
           if(!this.isAlpha(x, y)){
             this.killUnit(x, y);
           } else {
-            this.drawSubject(x, y, this.radius, 'black')
+            this.drawSubject(x, y, this.radius, this.colorAlphaUnit)
           }
         } else {
             this.hasSecondChance(x, y);
         }
-        // this.cleanCanva();
   }
 
   getNumberOfUnits(x, y){
@@ -91,8 +100,6 @@ class GameOfLifeContainer extends React.Component {
     let max_x = x == (this.board.length - 1) ? x : x + 1;
     let min_y = y == 0 ? y : y - 1;
     let max_y = y == (this.board[0].length - 1) ? y : y +1;
-
-
 
     for( let a = min_x ; a <= max_x; a++)
       for( let b = min_y; b <= max_y; b ++){
@@ -120,14 +127,14 @@ class GameOfLifeContainer extends React.Component {
       let result = false;
       if(this.getNumberOfUnits(x, y) == 3){
         this.board[x][y] = true;
-        this.drawSubject(x, y, this.radius, 'green');
+        this.drawSubject(x, y, this.radius, this.colorBabyUnit);
         result = true;
       };
       return result;
   };
 
   killUnit(x, y) {
-    this.drawSubject(x, y, this.radius, 'white');
+    this.drawSubject(x, y, this.radius, this.colorBetaUnit);
     this.board[x][y] = false;
     return true;
   }
@@ -141,7 +148,7 @@ class GameOfLifeContainer extends React.Component {
 
   cleanCanva(){
     this.context2d.beginPath();
-    this.context2d.fillStyle = 'white';
+    this.context2d.fillStyle = this.colorEmptySpace;
     this.context2d.fillRect(0, 0, 1920, 1280);
   }
 
@@ -157,7 +164,6 @@ class GameOfLifeContainer extends React.Component {
     return (
       <GameOfLife
           id='board'
-
           />
     )
   }

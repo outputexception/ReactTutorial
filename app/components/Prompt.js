@@ -26,7 +26,7 @@ const Prompt = (props) => {
                 type="submit">
                 Continue
               </button>
-            </div>
+              </div>
           </form>
       </div>
 
